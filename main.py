@@ -22,7 +22,7 @@ def textimage(text):
     dr.text((1.25, 1.25), text, font=font, fill="#000000")
     return im
 
-def con(text, threshold=150):
+def con(text, threshold=150, color=None):
     textimage(text).save("miao.png")
     im = np.array(bw(threshold, "miao.png"), dtype="int32").tolist()
     img = [[] for i in range(256)]
@@ -39,10 +39,24 @@ def con(text, threshold=150):
                 for z in range(16):
                     img[x*16+z].extend(white[z])
     n = np.array(img)
-    n[n == 1] = 255
-    n[n == 0] = 0
-    return Image.fromarray(n).convert("L")
+    if color==None:
+        n[n == 1] = 255
+        return Image.fromarray(n).convert("L")
+    else:
+        n = n.tolist()
+        for x in range(256):
+            for y in range(256):
+                if n[x][y]==0:
+                    n[x][y]=color
+                else:
+                    n[x][y]=[255,255,255]
+        n = np.uint8(n)
+
+        return Image.fromarray(n).convert("RGB")
 
 
 
-con("楚").save("chu.png")
+con("抄",color=[255,0,0]).save("chu.png")
+con("了").save("wan.png")
+con("作").save("ning.png")
+con("文").save("aa.png")
