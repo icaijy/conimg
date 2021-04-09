@@ -41,8 +41,8 @@ def con(text, threshold=150):
     n = np.array(img)
     n[n == 1] = 255
     n[n == 0] = 0
-    return Image.fromarray(n)
+    return Image.fromarray(n).convert("L")
 
 
 
-con("蔡")
+con("楚").save("chu.png")
