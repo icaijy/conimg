@@ -1,14 +1,17 @@
 from PIL import Image,ImageFont,ImageDraw
 import numpy as np
 np.set_printoptions(threshold=np.inf)
-def bw(threshold, path):
+def bw(threshold, file):
     '''
 
-    :param path: file path
+    :param file: file path or PIL.Image.Image object
     :param threshold: color value, more big, more deep
     :return: PIL Image
     '''
-    img = Image.open(path)
+    if type(file)==Image.Image:
+        img = file
+    else:
+        img = Image.open(file)
     Img = img.convert('L')
     Img = Img.point([0]*(threshold-1)+[1]*(257-threshold),'1')
     return Img
@@ -23,12 +26,9 @@ def textimage(text, size=16):
     return im
 
 def con(text, threshold=150, color=None, size=16):
-    textimage(text, size=size).save("miao.png")
-    im = np.array(bw(threshold, "miao.png"), dtype="int32").tolist()
+    im = np.array(bw(threshold, textimage(text, size=size)), dtype="int32").tolist()
     img = [[] for i in range(size*size)]
-    white = Image.new("RGB", (size, size), (255, 255, 255))
-    white.save("white.png")
-    white = np.array(bw(6, "white.png"),dtype="int32").tolist()
+    white = np.array(bw(6, Image.new("RGB", (size, size), (255, 255, 255))),dtype="int32").tolist()
     for x in range(size):
         for y in im[x]:
             if y==0:
