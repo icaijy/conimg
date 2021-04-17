@@ -8,7 +8,7 @@ def bw(threshold, file):
     :param threshold: color value, more big, more deep
     :return: PIL Image
     '''
-    if type(file)==Image.Image:
+    if type(file)!=str:
         img = file
     else:
         img = Image.open(file)
@@ -54,6 +54,26 @@ def con(text, threshold=150, color=None, size=16):
 
         return Image.fromarray(n).convert("RGB")
 
+def conimg(file, threshold=150,):
+    origin = Image.open(file).convert("RGB")
+    size = origin.size[0]
+    im = np.array(bw(threshold, origin).convert("RGB"), dtype="int32").tolist()
+    img = [[] for i in range(size*size)]
+    origin = np.array(origin).tolist()
+    white = np.array(
+            Image.new("RGB", (size, size), (255, 255, 255)).convert("RGB")
+        ,dtype="int32"
+    ).tolist()
+    for x in range(size):
+        for y in range(size):
+            if im[x][y]==[0,0,0]:
+                for z in range(size):
+                    img[x*size+z].extend(origin[z])
 
-con("妙",size=64).save("a.png")
-con("啊",size=64).save("b.png")
+            else:
+                for z in range(size):
+                    img[x*size+z].extend(white[z])
+    n = np.uint8(img)
+    return Image.fromarray(n).convert("RGB")
+
+conimg("compass.png").save("conpass2.png")
